@@ -1,11 +1,5 @@
 # Hello World App
 
-## Autora
-Lourdes Rodríguez Morón
-
-## Versión
-1.0
-
 ## Contenidos Aprendidos
 
 En este proyecto, se han cubierto los siguientes conceptos clave del desarrollo en Android:
@@ -49,6 +43,12 @@ El proyecto contiene las siguientes partes clave:
 ## Imagen de la Aplicación
 
 ![Captura de pantalla de la aplicación](img/aplicacion.png)
+
+## Autora
+Lourdes Rodríguez Morón
+
+## Versión
+1.0
 
 ## Licencia
 Este proyecto está licenciado bajo la [Licencia MIT](https://opensource.org/licenses/MIT). Consulta el archivo `LICENSE` para más detalles.
