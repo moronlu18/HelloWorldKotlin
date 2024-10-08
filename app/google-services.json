@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "636206909899",
+    "project_id": "faultapp-77da5",
+    "storage_bucket": "faultapp-77da5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:636206909899:android:92963e884d11b9dd6cce4e",
+        "android_client_info": {
+          "package_name": "com.moronlu18.helloworldkotlin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyKpHNo0045a7Aw4wmWng9L5Casq4pLiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

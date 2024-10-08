@@ -1,0 +1,36 @@
+[versions]
+agp = "8.6.0"
+kotlin = "1.9.0"
+coreKtx = "1.13.1"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+appcompat = "1.7.0"
+material = "1.12.0"
+activity = "1.9.2"
+constraintlayout = "2.1.4"
+gms ="4.4.2"
+firebasebom= "33.4.0"
+dokka="1.9.20"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+firebase-bom ={ group="com.google.firebase", name="firebase-bom" , version.ref="firebasebom"}
+firebase-analytics-ktx= { group="com.google.firebase", name="firebase-analytics-ktx"}
+dokka-documentation = { group="org.jetbrains.dokka", name="android-documentation-plugin", version.ref="dokka"}
+dokka-mathjax ={group="org.jetbrains.dokka", name="mathjax-plugin", version.ref="dokka"}
+dokka-kotlin ={ group="org.jetbrains.dokka", name="kotlin-as-java-plugin", version.ref="dokka"}
+
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "gms" }
+jetbrains-dokka ={id="org.jetbrains.dokka" ,version.ref="dokka"}

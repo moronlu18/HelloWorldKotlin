@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Hello</string>
+    <string name="btSendMessageText">Manda Mensaje</string>
+    <string name="tvFarewellText">Vamos a aprobar TODOS DEINT </string>
+    <string name="tvGreatingText">Hola Mundo de Android</string>
+    <string name="tvGreatingTextFinal">Nos vamos de fiesta en Junio!!\n</string>
+</resources>

@@ -1,0 +1,7 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:com.moronlu18.helloworldkotlin////PointingToDeclaration/app/com.moronlu18.helloworldkotlin/index.html
+$dokka.location:com.moronlu18.helloworldkotlin/MainActivity///PointingToDeclaration/app/com.moronlu18.helloworldkotlin/-main-activity/index.html
+$dokka.location:com.moronlu18.helloworldkotlin/MainActivity/MainActivity/#/PointingToDeclaration/app/com.moronlu18.helloworldkotlin/-main-activity/-main-activity.html
+com.moronlu18.helloworldkotlin
+
