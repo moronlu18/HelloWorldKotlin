@@ -11,7 +11,9 @@ activity = "1.9.2"
 constraintlayout = "2.1.4"
 gms ="4.4.2"
 firebasebom= "33.4.0"
+crashlytics = "3.0.2"
 dokka="1.9.20"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -24,9 +26,11 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 firebase-bom ={ group="com.google.firebase", name="firebase-bom" , version.ref="firebasebom"}
 firebase-analytics-ktx= { group="com.google.firebase", name="firebase-analytics-ktx"}
+firebase-crashlytics-ktx = { group = "com.google.firebase", name = "firebase-crashlytics-ktx", version.ref="crashlytics"}
 dokka-documentation = { group="org.jetbrains.dokka", name="android-documentation-plugin", version.ref="dokka"}
 dokka-mathjax ={group="org.jetbrains.dokka", name="mathjax-plugin", version.ref="dokka"}
 dokka-kotlin ={ group="org.jetbrains.dokka", name="kotlin-as-java-plugin", version.ref="dokka"}
+dokka-gradle ={ group="org.jetbrains.dokka", name="dokka-gradle-plugin", version.ref="dokka"}
 
 
 [plugins]
@@ -34,3 +38,7 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "gms" }
 jetbrains-dokka ={id="org.jetbrains.dokka" ,version.ref="dokka"}
+firebase-crashlytics= { id = "com.google.firebase.crashlytics", version.ref="crashlytics"}
+
+
+

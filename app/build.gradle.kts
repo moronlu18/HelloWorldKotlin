@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.services)
     alias(libs.plugins.jetbrains.dokka)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 android {
@@ -58,6 +59,7 @@ dependencies {
 
     // Add the dependency for the Firebase SDK for Google Analytics
     implementation(libs.firebase.analytics.ktx)
+    implementation(libs.firebase.crashlytics.ktx)
 
     dokkaPlugin(libs.dokka.documentation )
     // Is applied universally
@@ -66,6 +68,4 @@ dependencies {
     dokkaHtmlPlugin(libs.dokka.kotlin)
     // Is applied for HTML format in multi-project builds
     dokkaHtmlPartialPlugin(libs.dokka.kotlin)
-
-
 }
