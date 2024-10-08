@@ -36,6 +36,11 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
+
 }
 //Crea la documentación en una carpeta fuera de /app llamada /documentation/html
 tasks.dokkaHtml.configure {

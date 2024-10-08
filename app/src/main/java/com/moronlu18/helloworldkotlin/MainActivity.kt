@@ -2,12 +2,11 @@ package com.moronlu18.helloworldkotlin
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.moronlu18.helloworldkotlin.databinding.ActivityMainBinding
 
 
 /**
@@ -33,10 +32,20 @@ class MainActivity : AppCompatActivity() {
     //TODO ámbito de las variables
     private val TAG = "MainActivity"
     lateinit var message: String
-    val tvGreating: TextView by lazy { findViewById(R.id.tvGreating) }
-    val btnChangeGreating by lazy {
+
+    /*
+    Opción 1: Ineficiente
+    private val tvGreating: TextView by lazy { findViewById(R.id.tvGreating) }
+    private val btnChangeGreating by lazy {
         findViewById<Button>(R.id.btSendMessage)
-    }
+    }*/
+
+    /*
+    Opción 2: View Binding
+     */
+    private lateinit var binding: ActivityMainBinding
+
+
 
     /**
      * On create de mi activuidad principal
@@ -47,19 +56,36 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
+        //Opción 1: setContentView(R.layout.activity_main)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
         message = "Hola Mundo"
-        tvGreating.text = getString(R.string.tvGreatingTextFinal)
-        btnChangeGreating.setOnClickListener {
-            tvGreating.text = getString(R.string.tvGreatingTextFinal)
+        /**
+         * Opción 1:
+         *  tvGreating.text = getString(R.string.tvGreatingTextFinal)
+         *         btnChangeGreating.setOnClickListener {
+         *             tvGreating.text = getString(R.string.tvGreatingTextFinal)
+         *             //Toast.makeText(this, "Y ahora con el Contexto ", Toast.LENGTH_SHORT).show()
+         *             throw RuntimeException("Aquí hay un gran error") // Force a crash
+         *         }
+         */
+
+
+        //Opcción 2: View Binding
+        binding.tvGreating. text = getString(R.string.tvGreatingTextFinal)
+        binding.btSendMessage.setOnClickListener {
+            binding.tvGreating.text = getString(R.string.tvGreatingTextFinal)
             //Toast.makeText(this, "Y ahora con el Contexto ", Toast.LENGTH_SHORT).show()
             throw RuntimeException("Aquí hay un gran error") // Force a crash
         }
+
         Log.d(TAG, "MainActivity-> onCreate()")
     }
 
@@ -67,7 +93,7 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         Log.d(TAG, "MainActivity-> onStart()")
         //TODO comentari
-        Log.d(TAG, "Texto del saludo: $tvGreating.text")
+        Log.d(TAG, "Texto del saludo: ${binding.tvGreating}.text")
     }
 
 

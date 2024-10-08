@@ -45,7 +45,7 @@ El proyecto contiene las siguientes partes clave:
 ![Captura de pantalla de la aplicación](img/aplicacion.png)
 
 ## Autora
-Lourdes Rodríguez Morón
+Lourdes Rodríguez Morón :tada:
 
 ## Versión
 1.0
