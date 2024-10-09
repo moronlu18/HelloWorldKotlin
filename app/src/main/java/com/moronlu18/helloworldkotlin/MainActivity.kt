@@ -20,6 +20,8 @@ import com.moronlu18.helloworldkotlin.databinding.ActivityMainBinding
  *     <li>Utilizar el registro de sucesos LogCat</li>
  *     <li>Generar la documentacion en formato html</li>
  *     <li>Inicializacion tardía (lateinit) y perezosa (by lazy)</li>
+ *     <li>A depurar con puntos de interrupción</li>
+ *     <li>Crear regiones de métodos que tienen una relación</li>
  * </ol>
  *
  * @author Lourdes Rodríguez Morón
@@ -89,6 +91,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "MainActivity-> onCreate()")
     }
 
+    //region Ciclo de Vida de una Activity
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "MainActivity-> onStart()")
@@ -96,5 +99,26 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "Texto del saludo: ${binding.tvGreating}.text")
     }
 
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "MainActivity-> onResume()")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "MainActivity-> onPause()")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "MainActivity-> onStop()")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "MainActivity-> onDestroy()")
+    }
+
+    //endregion
 
 }
