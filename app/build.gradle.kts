@@ -42,9 +42,9 @@ android {
     }
 
 }
-//Crea la documentación en una carpeta fuera de /app llamada /documentation/html
+//Crea la documentación en una carpeta fuera de /app llamada /docs
 tasks.dokkaHtml.configure {
-    outputDirectory.set(file("../documentation/html"))
+    outputDirectory.set(file("../docs"))
 }
 
 dependencies {
