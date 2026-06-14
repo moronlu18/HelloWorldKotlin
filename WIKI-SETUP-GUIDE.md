@@ -1,215 +1,62 @@
-# Guía Completa: Wiki desde README con GitHub Actions
+# Guía: Wiki desde README con GitHub Actions
 
 ## Índice
 
-1. [Resumen del Proyecto](#1-resumen-del-proyecto)
-2. [Configuración del Proyecto Android](#2-configuración-del-proyecto-android)
-3. [Documentación KDoc con Dokka](#3-documentación-kdoc-con-dokka)
-4. [Configuración de GitHub Actions](#4-configuración-de-github-actions)
-5. [Configuración de GitHub Pages](#5-configuración-de-github-pages)
-6. [Configuración de la Wiki](#6-configuración-de-la-wiki)
-7. [Estructura de Archivos](#7-estructura-de-archivos)
-8. [Solución de Problemas](#8-solución-de-problemas)
+1. [Resumen](#1-resumen)
+2. [Configuración GitHub](#2-configuración-github)
+3. [Workflows](#3-workflows)
+4. [Estructura](#4-estructura)
+5. [Solución de Problemas](#5-solución-de-problemas)
 
 ---
 
-## 1. Resumen del Proyecto
+## 1. Resumen
 
-Este proyecto demuestra cómo:
-- Documentar código Android con **KDoc**
-- Generar documentación HTML con **Dokka**
-- Desplegar documentación en **GitHub Pages**
-- Sincronizar README con **GitHub Wiki** automáticamente
-
-### Tecnologías Utilizadas
-
-| Tecnología | Propósito |
-|------------|-----------|
-| Kotlin | Lenguaje de programación |
-| Dokka | Generación de documentación |
-| GitHub Actions | CI/CD automatizado |
-| GitHub Pages | Hosting de documentación |
-| GitHub Wiki | Documentación colaborativa |
+Automatización que sincroniza el `README.md` con la Wiki de GitHub:
+- Crea `Home.md` desde el README
+- Genera `_Sidebar.md` con los headings del README
+- Copia imágenes
 
 ---
 
-## 2. Configuración del Proyecto Android
+## 2. Configuración GitHub
 
-### 2.1. Archivo `build.gradle.kts` (Raíz)
+### 2.1. Habilitar Wiki
 
-```kotlin
-import org.jetbrains.dokka.gradle.DokkaTask
+1. Repositorio → **Settings** → **General**
+2. **Features** → Marcar **Wikis**
+3. Save
 
-plugins {
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.google.services) apply false
-    alias(libs.plugins.jetbrains.dokka) apply false
-    alias(libs.plugins.firebase.crashlytics) apply false
-}
-```
+### 2.2. Habilitar GitHub Pages
 
-### 2.2. Archivo `app/build.gradle.kts`
+1. **Settings** → **Pages**
+2. Source: **"Deploy from a branch"**
+3. Branch: **main** / Folder: **/docs**
+4. Save
 
-#### Plugins
+### 2.3. Crear Token de Acceso
 
-```kotlin
-plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.google.services)
-    alias(libs.plugins.jetbrains.dokka)  // ← Plugin de Dokka
-    alias(libs.plugins.firebase.crashlytics)
-}
-```
+1. Ve a https://github.com/settings/tokens
+2. **Generate new token (classic)**
+3. Nombre: `Wiki Sync Token`
+4. Permisos: **`repo`**
+5. Generate token → **Copiar token**
 
-#### Configuración de Dokka
+### 2.4. Crear Secreto
 
-```kotlin
-// Crea la documentación en una carpeta fuera de /app llamada /docs
-tasks.dokkaHtml.configure {
-    outputDirectory.set(file("../docs"))
-}
-```
-
-#### Dependencias de Dokka
-
-```kotlin
-dependencies {
-    // ... otras dependencias
-    
-    // Dokka
-    dokkaPlugin(libs.dokka.documentation)
-    dokkaPlugin(libs.dokka.mathjax)
-    dokkaHtmlPlugin(libs.dokka.kotlin)
-    dokkaHtmlPartialPlugin(libs.dokka.kotlin)
-}
-```
-
-### 2.3. Archivo `libs.versions.toml` (Gradle Version Catalog)
-
-Asegúrate de tener las versiones de Dokka:
-
-```toml
-[versions]
-dokka = "1.9.20"
-
-[libraries]
-dokka-documentation = { group = "org.jetbrains.dokka", name = "dokka-core", version.ref = "dokka" }
-dokka-mathjax = { group = "org.jetbrains.dokka", name = "dokka-mathjax-plugin", version.ref = "dokka" }
-dokka-kotlin = { group = "org.jetbrains.dokka", name = "dokka-kotlin-as-java", version.ref = "dokka" }
-
-[plugins]
-jetbrains-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
-```
+1. Repositorio → **Settings** → **Secrets and variables** → **Actions**
+2. **New repository secret**
+3. Nombre: `WIKI_TOKEN`
+4. Valor: token copiado
+5. **Add secret**
 
 ---
 
-## 3. Documentación KDoc con Dokka
+## 3. Workflows
 
-### 3.1. Sintaxis KDoc
+### 3.1. deploy-docs.yml
 
-#### Documentación de Clase
-
-```kotlin
-/**
- * Descripción de la clase y su propósito.
- *
- * @property nombrePropiedad Descripción de la propiedad
- * @author Autor
- * @version Versión
- * @see OtraClase
- */
-class MiClase {
-    // ...
-}
-```
-
-#### Documentación de Función
-
-```kotlin
-/**
- * Descripción de qué hace la función.
- *
- * @param parametro1 Descripción del parámetro
- * @return Descripción del valor retornado
- * @throws ExcepcionCuando Cuando se lanza esta excepción
- */
-fun miFuncion(parametro1: String): Int {
-    // ...
-}
-```
-
-### 3.2. Ejemplo: `MainActivity.kt`
-
-```kotlin
-/**
- * Actividad principal que muestra dos textos y un botón que crea un
- * [Toast](https://developer.android.com/reference/android/widget/Toast?hl=en).
- *
- * Esta actividad demuestra conceptos básicos de desarrollo Android:
- * <ol>
- *     <li>Añadir dependencias al proyecto</li>
- *     <li>Crear un layout en XML</li>
- *     <li>Sincronizar el proyecto con Firebase</li>
- * </ol>
- *
- * Utiliza [View Binding](https://developer.android.com/topic/libraries/view-binding) 
- * para acceder a las vistas del layout.
- *
- * @author Lourdes Rodríguez Morón
- * @version 1.0
- * @see AppCompatActivity
- * @see ActivityMainBinding
- */
-class MainActivity : AppCompatActivity() {
-
-    /**
-     * Etiqueta para los logs de depuración.
-     */
-    private val TAG = "MainActivity"
-
-    /**
-     * Mensaje que se muestra en la interfaz.
-     * Se inicializa de forma tardía con [lateinit].
-     */
-    lateinit var message: String
-
-    /**
-     * Referencia al binding de la actividad.
-     * Permite acceder a las vistas del layout de forma segura.
-     *
-     * @see ActivityMainBinding
-     */
-    private lateinit var binding: ActivityMainBinding
-
-    /**
-     * Se llama cuando se crea la actividad por primera vez.
-     *
-     * @param savedInstanceState Si la actividad se está recreando después de un cierre
-     *                           previo, este contiene el estado guardado.
-     * @throws RuntimeException Se lanza intencionalmente para probar Firebase Crashlytics.
-     * @see [Documentación oficial de Android](https://developer.android.com/guide/components/activities/activity-lifecycle)
-     */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        // ...
-    }
-}
-```
-
-### 3.3. Generar Documentación
-
-```bash
-./gradlew dokkaHtml
-```
-
-La documentación se genera en `docs/`.
-
----
-
-## 4. Configuración de GitHub Actions
-
-### 4.1. Workflow: Despliegue a GitHub Pages
+Despliega documentación Dokka a GitHub Pages.
 
 **Archivo:** `.github/workflows/deploy-docs.yml`
 
@@ -239,25 +86,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: './docs'
-      
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
 ```
 
-### 4.2. Workflow: Sincronización con Wiki
+### 3.2. sync-wiki.yml
+
+Sincroniza README con Wiki de GitHub.
 
 **Archivo:** `.github/workflows/sync-wiki.yml`
-
-Este workflow extrae automáticamente los headings (H1, H2) del README.md para generar el sidebar de la wiki.
 
 ```yaml
 name: Sync README to Wiki
@@ -282,92 +126,23 @@ jobs:
       - name: Generate wiki pages
         run: |
           mkdir -p wiki-content
+          mkdir -p wiki-content/img
           
-          # Copy README as Home.md
           cp README.md wiki-content/Home.md
           
-          # Extract headings and generate _Sidebar.md
-          echo "## Navigation" > wiki-content/_Sidebar.md
-          echo "" >> wiki-content/_Sidebar.md
-          echo "* [Home](Home)" >> wiki-content/_Sidebar.md
-          echo "" >> wiki-content/_Sidebar.md
+          if [ -d "img" ]; then
+            cp -r img/* wiki-content/img/ 2>/dev/null || true
+          fi
           
-          # Extract H1 and H2 headings from README
-          grep -E "^#{1,2} " README.md | while read -r line; do
-            # Remove leading # symbols and spaces
+          # Create _Sidebar.md from README headings
+          SIDEBAR_CONTENT="Home"
+          while IFS= read -r line; do
             heading=$(echo "$line" | sed 's/^#* *//')
-            # Create anchor (lowercase, replace spaces with -)
-            anchor=$(echo "$heading" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
-            echo "* [$heading]($anchor)" >> wiki-content/_Sidebar.md
-          done
+            SIDEBAR_CONTENT="${SIDEBAR_CONTENT}
+${heading}"
+          done < <(grep -E "^#{1,3} " README.md)
           
-          echo "" >> wiki-content/_Sidebar.md
-          echo "---" >> wiki-content/_Sidebar.md
-          echo "" >> wiki-content/_Sidebar.md
-          echo "**Project Info**" >> wiki-content/_Sidebar.md
-          echo "* Version: 1.0" >> wiki-content/_Sidebar.md
-          echo "* Author: Lourdes Rodríguez Morón" >> wiki-content/_Sidebar.md
-          echo "* License: MIT" >> wiki-content/_Sidebar.md
-          
-          # Create additional pages from sections
-          cat > wiki-content/Instalación.md << 'EOF'
-          # Instalación y configuración
-          
-          Para ejecutar este proyecto, necesitarás:
-          
-          1. Android Studio.
-          2. Clonar este repositorio:
-             ```bash
-             git clone https://github.com/moronlu18/HelloWorldKotlin.git
-             ```
-          3. Abrir el proyecto en Android Studio.
-          EOF
-          
-          cat > wiki-content/Ejecución.md << 'EOF'
-          # Ejecución
-          
-          Para ejecutar la aplicación:
-          
-          1. Abre el proyecto en Android Studio.
-          2. Ejecuta **Run > Run 'app'**.
-          EOF
-          
-          cat > wiki-content/Estructura.md << 'EOF'
-          # Estructura del proyecto
-          
-          | Archivo | Descripción |
-          |---------|-------------|
-          | `MainActivity.kt` | Clase principal |
-          | `activity_main.xml` | Layout XML |
-          | `colors.xml` | Colores |
-          | `strings.xml` | Cadenas |
-          | `docs/` | Documentación Dokka |
-          EOF
-          
-          cat > wiki-content/Documentación.md << 'EOF'
-          # Documentación
-          
-          Generar documentación:
-          
-          ```bash
-          ./gradlew dokkaHtml
-          ```
-          EOF
-          
-          cat > wiki-content/api-reference.md << 'EOF'
-          # API Reference
-          
-          ## MainActivity
-          
-          ### Propiedades
-          - `TAG`: Etiqueta para logs
-          - `message`: Mensaje de la interfaz
-          - `binding`: Referencia al binding
-          
-          ### Métodos
-          - `onCreate()`: Inicializa la actividad
-          - `onStart()`: Se llama cuando es visible
-          EOF
+          echo "$SIDEBAR_CONTENT" > wiki-content/_Sidebar.md
 
       - name: Push to Wiki
         env:
@@ -381,248 +156,106 @@ jobs:
           WIKI_URL="https://x-access-token:${WIKI_TOKEN}@github.com/${{ github.repository }}.wiki.git"
           
           git clone "$WIKI_URL" wiki-repo
-          cp wiki-content/* wiki-repo/
           cd wiki-repo
+          
+          # Delete everything
+          git rm -rf . 2>/dev/null || true
+          git commit -m "cleanup" 2>/dev/null || true
+          
+          # Copy new content
+          cp -r ../wiki-content/* .
+          
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git diff --staged --quiet || git commit -m "docs: update wiki from README"
+          git commit -m "docs: update wiki"
           git push
 ```
 
-#### Cómo funciona la extracción de headings
-
-El workflow utiliza `grep` para extraer líneas que empiezan con `#` o `##`:
-
-```bash
-grep -E "^#{1,2} " README.md
-```
-
-Esto extrae:
-- `# Hello World App`
-- `## Contenidos Aprendidos`
-- `## Instalación y configuración`
-- `## Ejecución`
-- `## Estructura del proyecto`
-- `## Documentación`
-- `## Imagen de la Aplicación`
-- `## Autora`
-- `## Versión`
-- `## Licencia`
-
-Cada heading se convierte en un enlace del sidebar con formato:
-```markdown
-* [Hello World App](hello-world-app)
-* [Contenidos Aprendidos](contenidos-aprendidos)
-```
-
-### 4.3. Workflow Eliminado (Jekyll)
-
-Se eliminó `.github/workflows/jekyll-gh-pages.yml` porque causaba conflictos.
-
 ---
 
-## 5. Configuración de GitHub Pages
+## 4. Estructura
 
-### 5.1. Habilitar GitHub Pages
-
-1. Ve a tu repositorio en GitHub
-2. **Settings** → **Pages**
-3. En **Source**, selecciona: **"Deploy from a branch"**
-4. Selecciona rama: **`main`**
-5. Selecciona carpeta: **`/docs`**
-6. Haz clic en **Save**
-
-### 5.2. Verificar Configuración
-
-La URL de tu documentación será:
-```
-https://moronlu18.github.io/HelloWorldKotlin/
-```
-
-### 5.3. Archivo `.nojekyll`
-
-Creado para deshabilitar el procesamiento de Jekyll:
-
-```
-# (archivo vacío)
-```
-
----
-
-## 6. Configuración de la Wiki
-
-### 6.1. Habilitar la Wiki
-
-1. Ve a tu repositorio en GitHub
-2. **Settings** → **General**
-3. En **Features**, marca **Wikis**
-4. Guarda los cambios
-
-### 6.2. Crear Personal Access Token (PAT)
-
-1. Ve a https://github.com/settings/tokens
-2. Haz clic en **"Generate new token (classic)"**
-3. Nombre: `Wiki Sync Token`
-4. Expiración: 90 días (o la que prefieras)
-5. Permisos: marca **`repo`** (incluye acceso a wiki)
-6. Haz clic en **"Generate token"**
-7. **Copia el token** (solo se muestra una vez)
-
-### 6.3. Crear Secreto en GitHub
-
-1. Ve a tu repositorio → **Settings** → **Secrets and variables** → **Actions**
-2. Haz clic en **"New repository secret"**
-3. Nombre: `WIKI_TOKEN`
-4. Valor: pega el token que copiaste
-5. Haz clic en **"Add secret"**
-
-### 6.4. Estructura de la Wiki
-
-El workflow crea estas páginas:
-
-| Archivo | Contenido |
-|---------|-----------|
-| `Home.md` | README.md completo |
-| `_Sidebar.md` | Navegación lateral |
-| `Instalación.md` | Guía de instalación |
-| `Ejecución.md` | Cómo ejecutar la app |
-| `Estructura.md` | Estructura del proyecto |
-| `Documentación.md` | Cómo generar docs |
-| `api-reference.md` | Referencia API |
-
----
-
-## 7. Estructura de Archivos
-
-### 7.1. Estructura del Repositorio
+### 4.1. Repositorio
 
 ```
 HelloWorldKotlin/
 ├── .github/
 │   └── workflows/
-│       ├── deploy-docs.yml        # Despliegue a GitHub Pages
-│       └── sync-wiki.yml          # Sincronización con Wiki
+│       ├── deploy-docs.yml
+│       └── sync-wiki.yml
 ├── app/
-│   ├── build.gradle.kts           # Configuración Dokka
-│   └── src/
-│       └── main/
-│           └── java/
-│               └── com/moronlu18/helloworldkotlin/
-│                   └── MainActivity.kt  # Documentado con KDoc
-├── docs/                          # Documentación generada por Dokka
-│   ├── index.html
-│   ├── app/
-│   ├── images/
-│   ├── scripts/
-│   └── styles/
-├── .gitignore
-├── .nojekyll                      # Deshabilita Jekyll
-├── README.md                      # Fuente para la Wiki
-├── build.gradle.kts
-├── settings.gradle.kts
-└── gradle/
+│   └── build.gradle.kts
+├── docs/
+│   └── (documentación Dokka)
+├── img/
+│   └── aplicacion.png
+├── .nojekyll
+├── README.md
+├── WIKI-SETUP-GUIDE.md
+└── gradlew
 ```
 
-### 7.2. Archivos Importantes
+### 4.2. Wiki Generada
 
-| Archivo | Propósito |
+| Archivo | Contenido |
 |---------|-----------|
-| `app/build.gradle.kts` | Configuración de Dokka |
-| `.github/workflows/deploy-docs.yml` | Despliegue a GitHub Pages |
-| `.github/workflows/sync-wiki.yml` | Sincronización con Wiki |
-| `README.md` | Fuente para Home.md de la Wiki |
-| `docs/` | Documentación HTML generada |
+| `Home.md` | README.md completo |
+| `_Sidebar.md` | Headings del README |
+| `img/` | Imágenes |
 
 ---
 
-## 8. Solución de Problemas
+## 5. Solución de Problemas
 
-### 8.1. Error: "Failed to deploy (completed) - Jekyll"
+### Error: "Failed to deploy - Jekyll"
 
-**Causa:** GitHub Pages está intentando usar Jekyll.
-
-**Solución:**
-1. Asegúrate de tener el archivo `.nojekyll`
-2. Verifica que Source esté en "Deploy from a branch" → `main` → `/docs`
-
-### 8.2. Error: "Validation Failed (422)"
-
-**Causa:** GitHub Pages no está habilitado.
+**Causa:** GitHub Pages usa Jekyll.
 
 **Solución:**
-1. Ve a Settings → Pages
-2. Habilita GitHub Pages
-3. Configura Source correctamente
+1. Verificar que existe `.nojekyll`
+2. Settings → Pages → Source: "Deploy from a branch" → main → /docs
 
-### 8.3. Error: "WIKI_TOKEN secret not configured"
+### Error: "Validation Failed (422)"
 
-**Causa:** Falta el token de acceso.
-
-**Solución:**
-1. Crea un PAT con permiso `repo`
-2. Agrégalo como secreto `WIKI_TOKEN`
-
-### 8.4. Error: "could not read Username"
-
-**Causa:** Git no tiene credenciales.
+**Causa:** GitHub Pages no habilitado.
 
 **Solución:**
-```bash
-# Opción SSH
-git remote set-url origin git@github.com:moronlu18/HelloWorldKotlin.git
+1. Settings → Pages
+2. Habilitar y configurar Source
 
-# Opción HTTPS con token
-git remote set-url origin https://<USUARIO>:<TOKEN>@github.com/moronlu18/HelloWorldKotlin.git
-```
+### Error: "WIKI_TOKEN not configured"
 
-### 8.5. Regenerar Documentación
+**Causa:** Falta el token.
 
-Si modificas el código y quieres actualizar la documentación:
+**Solución:**
+1. Crear PAT con permiso `repo`
+2. Agregar como secreto `WIKI_TOKEN`
 
-```bash
-# Regenerar documentación Dokka
-./gradlew dokkaHtml
+### Sidebar no aparece
 
-# Los cambios se desplegarán automáticamente al hacer push
-git add .
-git commit -m "docs: update documentation"
-git push
-```
+**Causa:** Archivo corrupto o mal formateado.
+
+**Solución:**
+1. Deshabilitar y rehabilitar Wiki en Settings
+2. Ejecutar workflow manualmente
 
 ---
 
 ## Comandos Útiles
 
 ```bash
-# Generar documentación
+# Generar documentación Dokka
 ./gradlew dokkaHtml
 
-# Ver estado de git
+# Verificar estado
 git status
 
-# Hacer push
+# Ejecutar push
 git push origin main
-
-# Ver workflows
-ls -la .github/workflows/
-
-# Verificar documentación generada
-ls -la docs/
 ```
 
 ---
 
-## Referencias
-
-- [Dokka Documentation](https://kotlinlang.org/docs/dokka-get-started.html)
-- [GitHub Actions](https://docs.github.com/en/actions)
-- [GitHub Pages](https://docs.github.com/en/pages)
-- [GitHub Wiki](https://docs.github.com/en/commits/managing-a-repository/managing-files-in-a-repository/working-with-files)
-- [KDoc Syntax](https://kotlinlang.org/docs/kdoc.html)
-
----
-
 **Autor:** Lourdes Rodríguez Morón  
-**Fecha:** Junio 2026  
-**Versión:** 1.0
+**Fecha:** Junio 2026

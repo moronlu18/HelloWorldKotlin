@@ -68,12 +68,18 @@ El proyecto incluye dos workflows automatizados:
 - **Archivo:** `.github/workflows/sync-wiki.yml`
 - **Trigger:** Cambios en `README.md`
 - **Función:** Sincroniza el README con la Wiki de GitHub
-- **Características:**
-  - Genera `Home.md` desde el README
-  - Extrae headings H1/H2 para `_Sidebar.md`
-  - Crea páginas adicionales (Instalación, Ejecución, etc.)
+- **Genera:**
+  - `Home.md` desde el README
+  - `_Sidebar.md` con los headings (H1, H2, H3)
+  - Copia imágenes de `img/`
 
-Para configurar la wiki, consulta [WIKI-SETUP-GUIDE.md](WIKI-SETUP-GUIDE.md).
+### Configuración Requerida
+
+1. **GitHub Pages:** Settings → Pages → Source: "Deploy from a branch" → main → /docs
+2. **Wiki:** Settings → General → Features → Marcar Wikis
+3. **Token:** Crear PAT con permiso `repo` y guardar como secreto `WIKI_TOKEN`
+
+Para más detalles, consulta [WIKI-SETUP-GUIDE.md](WIKI-SETUP-GUIDE.md).
 
 ## Imagen de la Aplicación
 
