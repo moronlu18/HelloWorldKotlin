@@ -22,26 +22,24 @@ jobs:
           mkdir -p wiki-content
           mkdir -p wiki-content/img
           
-          # Copy README as Home.md
           cp README.md wiki-content/Home.md
           
-          # Copy images
           if [ -d "img" ]; then
             cp -r img/* wiki-content/img/ 2>/dev/null || true
           fi
           
-          # Generate _Sidebar.md (single page wiki)
+          # Generate _Sidebar.md without indentation
           cat > wiki-content/_Sidebar.md << 'EOF'
-          ## HelloWorldKotlin
-          
-          * [[Home]]
-          
-          ---
-          
-          **Info**
-          * Version: 1.0
-          * Author: Lourdes Rodríguez Morón
-          EOF
+## HelloWorldKotlin
+
+* [[Home]]
+
+---
+
+**Info**
+* Version: 1.0
+* Author: Lourdes Rodríguez Morón
+EOF
 
       - name: Push to Wiki
         env:
