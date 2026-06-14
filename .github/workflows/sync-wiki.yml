@@ -25,91 +25,22 @@ jobs:
           # Copy README as Home.md
           cp README.md wiki-content/Home.md
           
-          # Copy images referenced in README
+          # Copy images
           if [ -d "img" ]; then
             cp -r img/* wiki-content/img/ 2>/dev/null || true
           fi
           
-          # Generate _Sidebar.md with GitHub Wiki format links
-          echo "## Navigation" > wiki-content/_Sidebar.md
-          echo "" >> wiki-content/_Sidebar.md
-          echo "* [[Home]]" >> wiki-content/_Sidebar.md
-          echo "" >> wiki-content/_Sidebar.md
+          # Generate _Sidebar.md (single page wiki)
+          cat > wiki-content/_Sidebar.md << 'EOF'
+          ## HelloWorldKotlin
           
-          # Extract H1 and H2 headings from README
-          grep -E "^#{1,2} " README.md | while read -r line; do
-            # Remove leading # symbols and spaces
-            heading=$(echo "$line" | sed 's/^#* *//')
-            # Use double brackets for wiki links
-            echo "* [[$heading]]" >> wiki-content/_Sidebar.md
-          done
+          * [[Home]]
           
-          echo "" >> wiki-content/_Sidebar.md
-          echo "---" >> wiki-content/_Sidebar.md
-          echo "" >> wiki-content/_Sidebar.md
-          echo "**Project Info**" >> wiki-content/_Sidebar.md
-          echo "* Version: 1.0" >> wiki-content/_Sidebar.md
-          echo "* Author: Lourdes Rodríguez Morón" >> wiki-content/_Sidebar.md
-          echo "* License: MIT" >> wiki-content/_Sidebar.md
+          ---
           
-          # Create additional pages
-          cat > wiki-content/Instalación.md << 'EOF'
-          # Instalación y configuración
-          
-          Para ejecutar este proyecto, necesitarás:
-          
-          1. Android Studio.
-          2. Clonar este repositorio:
-             ```bash
-             git clone https://github.com/moronlu18/HelloWorldKotlin.git
-             ```
-          3. Abrir el proyecto en Android Studio.
-          EOF
-          
-          cat > wiki-content/Ejecución.md << 'EOF'
-          # Ejecución
-          
-          Para ejecutar la aplicación:
-          
-          1. Abre el proyecto en Android Studio.
-          2. Ejecuta **Run > Run 'app'**.
-          EOF
-          
-          cat > wiki-content/Estructura.md << 'EOF'
-          # Estructura del proyecto
-          
-          | Archivo | Descripción |
-          |---------|-------------|
-          | `MainActivity.kt` | Clase principal |
-          | `activity_main.xml` | Layout XML |
-          | `colors.xml` | Colores |
-          | `strings.xml` | Cadenas |
-          | `docs/` | Documentación Dokka |
-          EOF
-          
-          cat > wiki-content/Documentación.md << 'EOF'
-          # Documentación
-          
-          Generar documentación:
-          
-          ```bash
-          ./gradlew dokkaHtml
-          ```
-          EOF
-          
-          cat > wiki-content/api-reference.md << 'EOF'
-          # API Reference
-          
-          ## MainActivity
-          
-          ### Propiedades
-          - `TAG`: Etiqueta para logs
-          - `message`: Mensaje de la interfaz
-          - `binding`: Referencia al binding
-          
-          ### Métodos
-          - `onCreate()`: Inicializa la actividad
-          - `onStart()`: Se llama cuando es visible
+          **Info**
+          * Version: 1.0
+          * Author: Lourdes Rodríguez Morón
           EOF
 
       - name: Push to Wiki
