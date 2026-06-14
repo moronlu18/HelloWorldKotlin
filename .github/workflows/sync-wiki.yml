@@ -28,18 +28,9 @@ jobs:
             cp -r img/* wiki-content/img/ 2>/dev/null || true
           fi
           
-          # Generate _Sidebar.md without indentation
-          cat > wiki-content/_Sidebar.md << 'EOF'
-## HelloWorldKotlin
-
-* [[Home]]
-
----
-
-**Info**
-* Version: 1.0
-* Author: Lourdes Rodríguez Morón
-EOF
+          # Generate _Sidebar.md with headings only
+          echo "Home" > wiki-content/_Sidebar.md
+          grep -E "^#{1,2} " README.md | sed 's/^#* *//' >> wiki-content/_Sidebar.md
 
       - name: Push to Wiki
         env:
