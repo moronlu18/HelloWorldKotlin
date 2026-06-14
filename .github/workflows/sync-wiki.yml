@@ -17,20 +17,157 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Sync to Wiki
+      - name: Generate wiki pages
+        run: |
+          mkdir -p wiki-content
+          
+          # Copy README as Home.md
+          cp README.md wiki-content/Home.md
+          
+          # Generate _Sidebar.md
+          cat > wiki-content/_Sidebar.md << 'EOF'
+          ## Navigation
+          
+          * [Home](Home)
+          * [Instalación](Instalación)
+          * [Ejecución](Ejecución)
+          * [Estructura](Estructura)
+          * [Documentación](Documentación)
+          * [API Reference](api-reference)
+          
+          ---
+          
+          **Project Info**
+          * Version: 1.0
+          * Author: Lourdes Rodríguez Morón
+          * License: MIT
+          EOF
+          
+          # Create Instalación page
+          cat > wiki-content/Instalación.md << 'EOF'
+          # Instalación y configuración
+          
+          Para ejecutar este proyecto, necesitarás:
+          
+          1. Android Studio.
+          2. Clonar este repositorio:
+             ```bash
+             git clone https://github.com/moronlu18/HelloWorldKotlin.git
+             ```
+          3. Abrir el proyecto en Android Studio.
+          
+          ## Requisitos
+          
+          - Android Studio Hedgehog o superior
+          - JDK 17
+          - SDK Android 34
+          EOF
+          
+          # Create Ejecución page
+          cat > wiki-content/Ejecución.md << 'EOF'
+          # Ejecución
+          
+          Para ejecutar la aplicación en un emulador o dispositivo físico:
+          
+          1. Abre el proyecto en Android Studio.
+          2. Ejecuta el proyecto usando **Run > Run 'app'**.
+          3. La aplicación debería iniciar mostrando los mensajes configurados.
+          
+          ## Depuración
+          
+          El proyecto incluye Firebase Crashlytics para monitoreo de errores.
+          EOF
+          
+          # Create Estructura page
+          cat > wiki-content/Estructura.md << 'EOF'
+          # Estructura del proyecto
+          
+          El proyecto contiene las siguientes partes clave:
+          
+          | Archivo | Descripción |
+          |---------|-------------|
+          | `MainActivity.kt` | Clase principal que extiende `AppCompatActivity` |
+          | `activity_main.xml` | Layout XML de la interfaz |
+          | `colors.xml` | Definición de colores |
+          | `strings.xml` | Cadenas de texto |
+          | `docs/` | Documentación Dokka |
+          
+          ## Ciclo de vida
+          
+          La actividad implementa los métodos del ciclo de vida:
+          - `onCreate()`
+          - `onStart()`
+          - `onResume()`
+          - `onPause()`
+          - `onStop()`
+          - `onDestroy()`
+          EOF
+          
+          # Create Documentación page
+          cat > wiki-content/Documentación.md << 'EOF'
+          # Documentación
+          
+          La documentación del proyecto se ha generado con [Dokka](https://kotlinlang.org/docs/dokka-get-started.html).
+          
+          ## Generar documentación
+          
+          ```bash
+          ./gradlew dokkaHtml
+          ```
+          
+          ## Características
+          
+          - Etiquetas HTML para estructura
+          - Enlaces internos entre clases y métodos
+          - Enlaces externos a [Android Developers](https://developer.android.com)
+          - Formato Markdown para estilos
+          
+          ## Acceso
+          
+          La documentación está disponible en la carpeta `docs/`.
+          EOF
+          
+          # Create API Reference page
+          cat > wiki-content/api-reference.md << 'EOF'
+          # API Reference
+          
+          ## MainActivity
+          
+          Clase principal de la aplicación.
+          
+          ### Propiedades
+          
+          | Nombre | Tipo | Descripción |
+          |--------|------|-------------|
+          | `TAG` | `String` | Etiqueta para logs |
+          | `message` | `String` | Mensaje de la interfaz |
+          | `binding` | `ActivityMainBinding` | Referencia al binding |
+          
+          ### Métodos
+          
+          - `onCreate(savedInstanceState: Bundle?)` - Inicializa la actividad
+          - `onStart()` - Se llama cuando la actividad se vuelve visible
+          
+          ### Ejemplos
+          
+          ```kotlin
+          binding.tvGreating.text = getString(R.string.tvGreatingTextFinal)
+          ```
+          EOF
+
+      - name: Push to Wiki
         env:
           WIKI_TOKEN: ${{ secrets.WIKI_TOKEN }}
         run: |
           if [ -z "$WIKI_TOKEN" ]; then
             echo "Error: WIKI_TOKEN secret not configured"
-            echo "Create a PAT with 'repo' scope and add it as WIKI_TOKEN secret"
             exit 1
           fi
           
           WIKI_URL="https://x-access-token:${WIKI_TOKEN}@github.com/${{ github.repository }}.wiki.git"
           
           git clone "$WIKI_URL" wiki-repo
-          cp README.md wiki-repo/Home.md
+          cp wiki-content/* wiki-repo/
           cd wiki-repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
