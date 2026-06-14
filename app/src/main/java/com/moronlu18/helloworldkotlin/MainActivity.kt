@@ -12,6 +12,8 @@ import com.moronlu18.helloworldkotlin.databinding.ActivityMainBinding
 /**
  * Actividad principal que muestra dos textos y un botón que crea un
  * [Toast](https://developer.android.com/reference/android/widget/Toast?hl=en).
+ *
+ * Esta actividad demuestra conceptos básicos de desarrollo Android:
  * <ol>
  *     <li>Añadir dependencias al proyecto</li>
  *     <li>Crear un layout en XML</li>
@@ -24,36 +26,47 @@ import com.moronlu18.helloworldkotlin.databinding.ActivityMainBinding
  *     <li>Crear regiones de métodos que tienen una relación</li>
  * </ol>
  *
+ * Utiliza [View Binding](https://developer.android.com/topic/libraries/view-binding) para acceder a las vistas del layout.
+ *
  * @author Lourdes Rodríguez Morón
  * @version 1.0
  * @constructor Create empty Main activity
+ * @see AppCompatActivity
+ * @see ActivityMainBinding
  */
 
 class MainActivity : AppCompatActivity() {
 
-    //TODO ámbito de las variables
+    /**
+     * Etiqueta para los logs de depuración.
+     */
     private val TAG = "MainActivity"
+
+    /**
+     * Mensaje que se muestra en la interfaz.
+     * Se inicializa de forma tardía con [lateinit].
+     */
     lateinit var message: String
 
-    /*
-    Opción 1: Ineficiente
-    private val tvGreating: TextView by lazy { findViewById(R.id.tvGreating) }
-    private val btnChangeGreating by lazy {
-        findViewById<Button>(R.id.btSendMessage)
-    }*/
 
-    /*
-    Opción 2: View Binding
+    /**
+     * Referencia al binding de la actividad.
+     * Permite acceder a las vistas del layout de forma segura.
+     *
+     * @see ActivityMainBinding
      */
     private lateinit var binding: ActivityMainBinding
 
 
 
     /**
-     * On create de mi activuidad principal
+     * Se llama cuando se crea la actividad por primera vez.
+     * Inicializa la interfaz de usuario y configura los listeners de eventos.
      *
-     * @param savedInstanceState
-     * @throws RuntimeException para provocar un fallo en Firebase
+     * @param savedInstanceState Si la actividad se está recreando después de un cierre
+     *                           previo, este contiene el estado guardado.
+     * @throws RuntimeException Se lanza intencionalmente para probar Firebase Crashlytics.
+     * @see [Documentación oficial de Android](https://developer.android.com/guide/components/activities/activity-lifecycle)
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,6 +105,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     //region Ciclo de Vida de una Activity
+    /**
+     * Se llama cuando la actividad se vuelve visible para el usuario.
+     * Registra un mensaje en LogCat para seguimiento del ciclo de vida.
+     *
+     * @see [Documentación oficial de Android](https://developer.android.com/guide/components/activities/activity-lifecycle)
+     */
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "MainActivity-> onStart()")
