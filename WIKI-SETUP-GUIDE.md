@@ -257,6 +257,8 @@ jobs:
 
 **Archivo:** `.github/workflows/sync-wiki.yml`
 
+Este workflow extrae automáticamente los headings (H1, H2) del README.md para generar el sidebar de la wiki.
+
 ```yaml
 name: Sync README to Wiki
 
@@ -284,26 +286,30 @@ jobs:
           # Copy README as Home.md
           cp README.md wiki-content/Home.md
           
-          # Generate _Sidebar.md
-          cat > wiki-content/_Sidebar.md << 'EOF'
-          ## Navigation
+          # Extract headings and generate _Sidebar.md
+          echo "## Navigation" > wiki-content/_Sidebar.md
+          echo "" >> wiki-content/_Sidebar.md
+          echo "* [Home](Home)" >> wiki-content/_Sidebar.md
+          echo "" >> wiki-content/_Sidebar.md
           
-          * [Home](Home)
-          * [Instalación](Instalación)
-          * [Ejecución](Ejecución)
-          * [Estructura](Estructura)
-          * [Documentación](Documentación)
-          * [API Reference](api-reference)
+          # Extract H1 and H2 headings from README
+          grep -E "^#{1,2} " README.md | while read -r line; do
+            # Remove leading # symbols and spaces
+            heading=$(echo "$line" | sed 's/^#* *//')
+            # Create anchor (lowercase, replace spaces with -)
+            anchor=$(echo "$heading" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+            echo "* [$heading]($anchor)" >> wiki-content/_Sidebar.md
+          done
           
-          ---
+          echo "" >> wiki-content/_Sidebar.md
+          echo "---" >> wiki-content/_Sidebar.md
+          echo "" >> wiki-content/_Sidebar.md
+          echo "**Project Info**" >> wiki-content/_Sidebar.md
+          echo "* Version: 1.0" >> wiki-content/_Sidebar.md
+          echo "* Author: Lourdes Rodríguez Morón" >> wiki-content/_Sidebar.md
+          echo "* License: MIT" >> wiki-content/_Sidebar.md
           
-          **Project Info**
-          * Version: 1.0
-          * Author: Lourdes Rodríguez Morón
-          * License: MIT
-          EOF
-          
-          # Create additional pages
+          # Create additional pages from sections
           cat > wiki-content/Instalación.md << 'EOF'
           # Instalación y configuración
           
@@ -382,6 +388,32 @@ jobs:
           git add .
           git diff --staged --quiet || git commit -m "docs: update wiki from README"
           git push
+```
+
+#### Cómo funciona la extracción de headings
+
+El workflow utiliza `grep` para extraer líneas que empiezan con `#` o `##`:
+
+```bash
+grep -E "^#{1,2} " README.md
+```
+
+Esto extrae:
+- `# Hello World App`
+- `## Contenidos Aprendidos`
+- `## Instalación y configuración`
+- `## Ejecución`
+- `## Estructura del proyecto`
+- `## Documentación`
+- `## Imagen de la Aplicación`
+- `## Autora`
+- `## Versión`
+- `## Licencia`
+
+Cada heading se convierte en un enlace del sidebar con formato:
+```markdown
+* [Hello World App](hello-world-app)
+* [Contenidos Aprendidos](contenidos-aprendidos)
 ```
 
 ### 4.3. Workflow Eliminado (Jekyll)

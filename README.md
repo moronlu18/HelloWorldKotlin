@@ -54,6 +54,27 @@ La documentación incluye:
 - Enlaces externos a [Android Developers](https://developer.android.com)
 - Formato Markdown para estilos
 
+## GitHub Actions
+
+El proyecto incluye dos workflows automatizados:
+
+### Despliegue a GitHub Pages
+- **Archivo:** `.github/workflows/deploy-docs.yml`
+- **Trigger:** Push a `main`
+- **Función:** Despliega la documentación Dokka a GitHub Pages
+- **URL:** https://moronlu18.github.io/HelloWorldKotlin/
+
+### Sincronización con Wiki
+- **Archivo:** `.github/workflows/sync-wiki.yml`
+- **Trigger:** Cambios en `README.md`
+- **Función:** Sincroniza el README con la Wiki de GitHub
+- **Características:**
+  - Genera `Home.md` desde el README
+  - Extrae headings H1/H2 para `_Sidebar.md`
+  - Crea páginas adicionales (Instalación, Ejecución, etc.)
+
+Para configurar la wiki, consulta [WIKI-SETUP-GUIDE.md](WIKI-SETUP-GUIDE.md).
+
 ## Imagen de la Aplicación
 
 ![Captura de pantalla de la aplicación](img/aplicacion.png)
